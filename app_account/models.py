@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
             return
 
         user = self.model(
-            email=self.normalize(),
+            email=self.normalize_email(email),
             display_name=display_name
         )
         user.set_password(password)
@@ -26,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=10, null=False, verbose_name='유저의 실명')
     email = models.EmailField(max_length=50, unique=True, null=False, verbose_name='유저의 이메일')
     display_name = models.CharField(max_length=20, null=False, verbose_name='유저의 닉네임')
-    point = models.IntegerField()
+    point = models.IntegerField(default=0)
     is_admin = models.BooleanField('스태프 권한', default=False)
     is_active = models.BooleanField('사용중', default=True)
     is_deleted = models.BooleanField(default=False)
@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    REQUIRED_FIELDS = ['name', 'display_name']
+    REQUIRED_FIELDS = ['display_name']
     USERNAME_FIELD = 'email'
 
     @property
