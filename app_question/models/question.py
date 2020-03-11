@@ -6,7 +6,10 @@ User = get_user_model()
 
 class Question(models.Model):
     class Category(models.TextChoices):
-        pass
+        EDITING = '편집'
+        COPYRIGHT = '저작권'
+        CHANNEL_MANAGEMENT = '채널관리'
+        ETC = '기타'
 
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     category = models.CharField(max_length=15, choices=Category.choices, db_index=True)

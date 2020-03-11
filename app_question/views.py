@@ -1,11 +1,24 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework import serializers
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from app_question.models.question import Question
+from app_question.serializers.question import QuestionSerializer
 
 
-class QuestionSeializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    authentication_classes = (TokenAuthentication,)
+    action_permissions = {
+        IsAuthenticated: ['update', 'partial_update', 'destroy', 'list', 'create'],
+        AllowAny: ['retrieve']
+    }
+
+    def get_queryset(self):
+        if self.request.user !=
+
+    def get_permissions(self):
+        # TODO : 권한관리 추가하기, (글 작성자와 어드민만 수정, 삭제 가능)
+        if self.action in ['',]:
+            return True
+        return False
