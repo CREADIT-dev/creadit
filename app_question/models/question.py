@@ -13,7 +13,7 @@ class Question(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     category = models.CharField(max_length=15, choices=Category.choices, db_index=True)
-    content = models.CharField(max_length=1000)
+    content = models.TextField()
 
 
 class QuestionImage(models.Model):
