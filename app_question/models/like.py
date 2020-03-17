@@ -10,3 +10,5 @@ class Like(models.Model):
     user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, related_name='likes', on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'question_like'

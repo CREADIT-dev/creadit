@@ -17,8 +17,14 @@ class Question(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = 'question'
+
 
 class QuestionImage(models.Model):
     question = models.ForeignKey(Question, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField()
     seq = models.IntegerField()
+
+    class Meta:
+        db_table = 'question_image'
