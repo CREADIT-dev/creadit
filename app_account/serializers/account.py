@@ -12,7 +12,6 @@ class SignUpSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        print(validated_data)
         email: str = validated_data['email']
         display_name: str = validated_data['display_name']
         password: str = validated_data['password']

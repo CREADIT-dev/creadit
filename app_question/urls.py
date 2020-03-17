@@ -15,7 +15,6 @@ question_detail = QuestionViewSet.as_view({
 
 
 urlpatterns = [
-    # TODO : url 추가해주기
-    path('QnA', question_views),
-    path('QnA/<int:question_id>')
+    path('', question_views, name="qna"),
+    path('<int:question_id>', question_detail, name="qna_detail")
 ]
