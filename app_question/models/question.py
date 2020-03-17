@@ -14,6 +14,8 @@ class Question(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     category = models.CharField(max_length=15, choices=Category.choices, db_index=True)
     content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class QuestionImage(models.Model):
