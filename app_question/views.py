@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import get_object_or_404
@@ -24,6 +25,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Question.objects.all()
 
     def partial_update(self, request, *args, **kwargs):
+        if not request.user.is_admin:
+            raise Http404()
+
         pk = kwargs['pk']
         question = get_object_or_404(Question, pk)
         serializer = QuestionSerializer(question, data=request.data)
