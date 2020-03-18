@@ -2,6 +2,7 @@ from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from app_question.models import QuestionImage
