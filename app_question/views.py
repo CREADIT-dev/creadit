@@ -2,22 +2,18 @@ from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from app_question.models.question import Question
 from app_question.serializers.question import QuestionSerializer
+from mixin import AllowModifyOnlyAuthorUserMixin, LoginRequiredMixin
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     authentication_classes = (TokenAuthentication,)
-    action_permissions = {
-        IsAuthenticated: ['partial_update', 'destroy', 'list', 'create'],
-        AllowAny: ['retrieve']
-    }
+    permission_classes = (LoginRequiredMixin, AllowModifyOnlyAuthorUserMixin,)
 
     def get_queryset(self):
         if self.request.method != "GET":
