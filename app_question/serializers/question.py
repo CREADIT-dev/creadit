@@ -20,7 +20,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'author', 'category', 'content', 'images', 'like_count', 'created_at', 'updated_at')
+        fields = ('id', 'author', 'point', 'category', 'content', 'images', 'like_count', 'created_at', 'updated_at')
         read_only_fields = ('id', 'author', 'created_at', 'updated_at')
 
     def get_author(self):
@@ -38,9 +38,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         if user is None:
             raise Http404()
 
+        point = validated_data['point']
         category = validated_data['category']
         content = validated_data['content']
-        question = Question.objects.create(author=user, category=category, content=content)
+        question = Question.objects.create(author=user, point=point, category=category, content=content)
 
         for image in validated_data['images']:
             QuestionImage.objects.create(question=question, **image)
@@ -48,8 +49,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         return question
 
     def update(self, instance, validated_data):
+        point = validated_data['point']
         category = validated_data['category']
         content = validated_data['content']
+        
+        instance.point = point
         instance.category = category
         instance.content = content
         instance.save()

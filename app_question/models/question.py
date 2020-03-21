@@ -12,6 +12,7 @@ class Question(models.Model):
         ETC = '기타'
 
     author = models.ForeignKey(User, on_delete=models.PROTECT)
+    point = models.IntegerField()
     category = models.CharField(max_length=15, choices=Category.choices, db_index=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
