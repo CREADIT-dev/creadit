@@ -12,3 +12,4 @@ class Like(models.Model):
 
     class Meta:
         db_table = 'question_like'
+        unique_together = ('user', 'question',)

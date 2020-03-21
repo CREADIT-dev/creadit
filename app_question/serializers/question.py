@@ -16,10 +16,11 @@ class QuestionImageSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     images = QuestionImageSerializer(many=True)
+    like_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ('id', 'author', 'category', 'content', 'images', 'created_at', 'updated_at')
+        fields = ('id', 'author', 'category', 'content', 'images', 'like_count', 'created_at', 'updated_at')
         read_only_fields = ('id', 'author', 'created_at', 'updated_at')
 
     def get_author(self):
@@ -28,6 +29,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         if request is not None and hasattr(request, 'user'):
             return request.user
         return None
+
+    def get_like_count(self, instance):
+        return instance.likes.count()
 
     def create(self, validated_data):
         user = self.get_author()
@@ -59,7 +63,6 @@ class QuestionSerializer(serializers.ModelSerializer):
                 image: QuestionImage = image_qs.get(seq=seq)
                 image.image_url = image_url
                 image.save()
-
             else:
                 QuestionImage.objects.create(question=instance, image_url=image_url, seq=seq)
 
