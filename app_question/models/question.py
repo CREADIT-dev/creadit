@@ -23,7 +23,7 @@ class Question(models.Model):
 
 class QuestionImage(models.Model):
     question = models.ForeignKey(Question, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField()
+    image_url = models.URLField()
     seq = models.IntegerField()
 
     class Meta:
