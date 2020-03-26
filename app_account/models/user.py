@@ -25,7 +25,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=10, null=False, verbose_name='유저의 실명')
     email = models.EmailField(max_length=50, unique=True, null=False, verbose_name='유저의 이메일')
-    display_name = models.CharField(max_length=20, null=False, verbose_name='유저의 닉네임')
+    display_name = models.CharField(max_length=20, null=False, unique=True, verbose_name='유저의 닉네임')
     image = models.ImageField(blank=True, default=None)
     point = models.IntegerField(default=0)
     is_pro = models.BooleanField(default=False)

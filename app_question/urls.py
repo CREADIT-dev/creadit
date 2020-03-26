@@ -17,6 +17,7 @@ question_detail = QuestionViewSet.as_view({
 
 question_like = QuestionLikeViewSet.as_view({'post': 'post'})
 
+answer
 urlpatterns = [
     path('', question_views, name="qna"),
     path('<int:pk>', question_detail, name="qna_detail"),

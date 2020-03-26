@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from app_question.models import Like
 from app_question.models.question import Question
+from app_question.serializers.answer import AnswerSerializer
 from app_question.serializers.question import QuestionSerializer
 from mixin import AllowModifyOnlyAuthorUserMixin, LoginRequiredMixin
 
@@ -52,5 +53,7 @@ class QuestionLikeViewSet(viewsets.ViewSet):
         return Response({"like_count": like_qs.count()}, status=200)
 
 
-
+class AnswerViewSet(viewsets.ModelViewSet):
+    queryset = ...
+    serializer_class = AnswerSerializer
 
