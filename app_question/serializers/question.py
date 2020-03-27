@@ -17,11 +17,7 @@ class QuestionImageSerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
     images = QuestionImageSerializer(many=True)
     like_count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Question
-        fields = ('id', 'author', 'point', 'category', 'content', 'images', 'like_count', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'author', 'created_at', 'updated_at')
+    author_display_name = serializers.SerializerMethodField()
 
     def get_author(self):
         request = self.context.get('request')
@@ -33,6 +29,9 @@ class QuestionSerializer(serializers.ModelSerializer):
     def get_like_count(self, instance):
         return instance.likes.count()
 
+    def get_author_display_name(self, instance):
+        return instance.author.display_name
+
     def create(self, validated_data):
         user = self.get_author()
         if user is None:
@@ -41,7 +40,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         point = validated_data['point']
         category = validated_data['category']
         content = validated_data['content']
-        question = Question.objects.create(author=user, point=point, category=category, content=content)
+        question = Question.objects.create(
+            author=user, point=point, category=category, content=content
+        )
 
         for image in validated_data['images']:
             QuestionImage.objects.create(question=question, **image)
@@ -52,7 +53,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         point = validated_data['point']
         category = validated_data['category']
         content = validated_data['content']
-        
+
         instance.point = point
         instance.category = category
         instance.content = content
@@ -71,3 +72,8 @@ class QuestionSerializer(serializers.ModelSerializer):
                 QuestionImage.objects.create(question=instance, image_url=image_url, seq=seq)
 
         return instance
+
+    class Meta:
+        model = Question
+        fields = ('id', 'author_display_name', 'point', 'category', 'content', 'images', 'like_count', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')

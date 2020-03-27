@@ -4,6 +4,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+from app_question.models import Answer
 from app_question.models import Like
 from app_question.models.question import Question
 from app_question.serializers.answer import AnswerSerializer
@@ -54,6 +55,10 @@ class QuestionLikeViewSet(viewsets.ViewSet):
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
-    queryset = ...
+    queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (LoginRequiredMixin, AllowModifyOnlyAuthorUserMixin,)
 
+    def get_queryset(self):
+        return self.queryset.filter(question_id=self.kwargs['pk'])

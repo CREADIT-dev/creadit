@@ -1,5 +1,6 @@
 from django.urls import path
 
+from app_question.views import AnswerViewSet
 from app_question.views import QuestionLikeViewSet
 from .views import QuestionViewSet
 
@@ -17,9 +18,14 @@ question_detail = QuestionViewSet.as_view({
 
 question_like = QuestionLikeViewSet.as_view({'post': 'post'})
 
-answer
+answer = AnswerViewSet.as_view({
+    'get': 'list',
+    'post': 'create',
+})
+
 urlpatterns = [
     path('', question_views, name="qna"),
     path('<int:pk>', question_detail, name="qna_detail"),
-    path('<int:pk>/like', question_like, name="qna_like")
+    path('<int:pk>/like', question_like, name="qna_like"),
+    path('<int:pk>/answer', answer, name="answer")
 ]

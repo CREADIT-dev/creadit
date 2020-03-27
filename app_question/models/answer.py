@@ -15,3 +15,12 @@ class Answer(models.Model):
 
     class Meta:
         db_table = 'answer'
+
+
+class AnswerImage(models.Model):
+    answer = models.ForeignKey(Answer, related_name='images', on_delete=models.CASCADE)
+    image_url = models.URLField()
+    seq = models.IntegerField()
+
+    class Meta:
+        db_table = 'auswer_image'
