@@ -17,6 +17,10 @@ class QuestionViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (LoginRequiredMixin, AllowModifyOnlyAuthorUserMixin,)
+    lookup_url_kwarg = "question_id"
+
+    def get_question_id(self):
+        return self.kwargs.get(self.lookup_url_kwarg)
 
     def get_queryset(self):
         if self.request.method != "GET":
@@ -27,9 +31,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
         if not request.user.is_admin:
             raise Http404()
 
-        pk = kwargs['pk']
-        question = get_object_or_404(Question, pk)
-        serializer = QuestionSerializer(question, data=request.data)
+        question_id = self.get_question_id()
+        question = get_object_or_404(Question, question_id)
+        serializer = self.serializer_class(question, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -41,9 +45,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class QuestionLikeViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (LoginRequiredMixin,)
+    lookup_url_kwarg = "question_id"
+
+    def get_question_id(self):
+        return self.kwargs.get(self.lookup_url_kwarg)
 
     def post(self, request, *args, **kwargs):
-        question_id = kwargs['pk']
+        question_id = self.get_question_id()
         like_qs = Like.objects.filter(question_id=question_id)
 
         if like_qs.exists():
@@ -59,6 +67,20 @@ class AnswerViewSet(viewsets.ModelViewSet):
     serializer_class = AnswerSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (LoginRequiredMixin, AllowModifyOnlyAuthorUserMixin,)
+    lookup_url_kwarg = "question_id"
+
+    def get_question_id(self):
+        return self.kwargs.get(self.lookup_url_kwarg)
 
     def get_queryset(self):
-        return self.queryset.filter(question_id=self.kwargs['pk'])
+        question_id = self.get_question_id()
+        return self.queryset.filter(question_id=question_id)
+
+    def create(self, request, *args, **kwargs):
+        question_id = self.get_question_id()
+        serializer = self.get_serializer(data=request.data, question_id=question_id)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+        return Response(serializer.data)

@@ -13,8 +13,13 @@ class AnswerImageSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    images = AnswerImageSerializer(many=True)
     author_display_name = serializers.SerializerMethodField()
+    images = AnswerImageSerializer(many=True)
+
+    def __init__(self, *args, **kwargs):
+        if 'question_id' in kwargs:
+            self.question_id = kwargs.pop('question_id')
+        super().__init__(*args, **kwargs)
 
     def get_author(self):
         request = self.context.get('request')
@@ -27,15 +32,12 @@ class AnswerSerializer(serializers.ModelSerializer):
         return instance.author.display_name
 
     def create(self, validated_data):
-        print(self.kwargs)
         user = self.get_author()
         if user is None:
             raise Http404()
 
-        question_id = validated_data['question_id']
         content = validated_data['content']
-
-        question = Question.objects.get(pk=question_id)
+        question = Question.objects.get(pk=self.question_id)
         answer = Answer.objects.create(
             question=question, author=user, content=content
         )
@@ -47,5 +49,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ('content', 'images', 'created_at', 'updated_at',)
+        fields = (
+            'author_display_name', 'content', 'images', 'created_at', 'updated_at',
+        )
         read_only_fields = ('author_display_name', 'created_at', 'updated_at',)

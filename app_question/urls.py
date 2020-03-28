@@ -25,7 +25,7 @@ answer = AnswerViewSet.as_view({
 
 urlpatterns = [
     path('', question_views, name="qna"),
-    path('<int:pk>', question_detail, name="qna_detail"),
-    path('<int:pk>/like', question_like, name="qna_like"),
-    path('<int:pk>/answer', answer, name="answer")
+    path('<int:question_id>', question_detail, name="qna_detail"),
+    path('<int:question_id>/like', question_like, name="qna_like"),
+    path('<int:question_id>/answer', answer, name="answer")
 ]
