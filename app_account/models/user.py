@@ -21,13 +21,14 @@ class UserManager(BaseUserManager):
         user = self.create_user(email, display_name, password)
         user.is_staff = True
 
+        return user
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=10, null=False, verbose_name='유저의 실명')
     email = models.EmailField(max_length=50, unique=True, null=False, verbose_name='유저의 이메일')
     display_name = models.CharField(max_length=20, null=False, unique=True, verbose_name='유저의 닉네임')
     image = models.ImageField(blank=True, default=None)
-    point = models.IntegerField(default=0)
     is_pro = models.BooleanField(default=False)
     is_admin = models.BooleanField('스태프 권한', default=False)
     is_active = models.BooleanField('사용중', default=True)

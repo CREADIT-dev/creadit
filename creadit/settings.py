@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'app_account',
     'app_question',
+    'app_point',
 ]
 
 MIDDLEWARE = [

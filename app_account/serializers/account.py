@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from app_point.models.point import Point
+
 User = get_user_model()
 
 
@@ -16,7 +18,8 @@ class SignUpSerializer(serializers.HyperlinkedModelSerializer):
         display_name: str = validated_data['display_name']
         password: str = validated_data['password']
 
-        User.objects.create_user(email=email, display_name=display_name, password=password)
+        user = User.objects.create_user(email=email, display_name=display_name, password=password)
+        Point.objects.create(user=user)
         return validated_data
 
 
