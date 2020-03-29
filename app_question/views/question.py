@@ -4,12 +4,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from app_question.models import Answer
-from app_question.models import Like
-from app_question.models.question import Question
-from app_question.serializers.answer import AnswerSerializer
+from app_question.models import Question
+from app_question.models import QuestionLike
 from app_question.serializers.question import QuestionSerializer
-from mixin import AllowModifyOnlyAuthorUserMixin, LoginRequiredMixin
+from mixin import AllowModifyOnlyAuthorUserMixin
+from mixin import LoginRequiredMixin
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -52,35 +51,11 @@ class QuestionLikeViewSet(viewsets.ViewSet):
 
     def post(self, request, *args, **kwargs):
         question_id = self.get_question_id()
-        like_qs = Like.objects.filter(question_id=question_id)
+        like_qs = QuestionLike.objects.filter(question_id=question_id)
 
         if like_qs.exists():
             like_qs.filter(user=request.user).delete()
             return Response({"like_count": like_qs.count()}, status=200)
 
-        Like.objects.create(question_id=question_id, user=request.user)
+        QuestionLike.objects.create(question_id=question_id, user=request.user)
         return Response({"like_count": like_qs.count()}, status=200)
-
-
-class AnswerViewSet(viewsets.ModelViewSet):
-    queryset = Answer.objects.all()
-    serializer_class = AnswerSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (LoginRequiredMixin, AllowModifyOnlyAuthorUserMixin,)
-    lookup_url_kwarg = "question_id"
-
-    def get_question_id(self):
-        return self.kwargs.get(self.lookup_url_kwarg)
-
-    def get_queryset(self):
-        question_id = self.get_question_id()
-        return self.queryset.filter(question_id=question_id)
-
-    def create(self, request, *args, **kwargs):
-        question_id = self.get_question_id()
-        serializer = self.get_serializer(data=request.data, question_id=question_id)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-
-        return Response(serializer.data)

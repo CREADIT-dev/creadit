@@ -1,3 +1,3 @@
 from .question import Question, QuestionImage
-from .answer import Answer
-from .like import Like
+from .answer import Answer, AnswerImage
+from .like import QuestionLike, AnswerLike
