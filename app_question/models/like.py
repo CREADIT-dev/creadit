@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class QuestionLike(models.Model):
-    user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='question_likes', on_delete=models.CASCADE)
     question = models.ForeignKey(Question, related_name='likes', on_delete=models.CASCADE)
 
     class Meta:
@@ -17,7 +17,7 @@ class QuestionLike(models.Model):
 
 
 class AnswerLike(models.Model):
-    user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='answer_likes', on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, related_name='likes', on_delete=models.CASCADE)
 
     class Meta:
